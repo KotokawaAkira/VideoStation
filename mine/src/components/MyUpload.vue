@@ -76,9 +76,13 @@ export default {
         currentChange(value) {
             this.currentPage = value;
         },
+        getPathUid() {
+            let sps = window.location.pathname.split("/");
+            return sps[sps.length - 1];
+        },
         getMyUpload() {
             this.isLoading = true;
-            let path_uid = this.$parent.getPathUid();
+            let path_uid = this.getPathUid();
             fetch('https://kotokawa-akira-mywife.site/web/api/video/getByUp/' + path_uid, { method: 'get' })
                 .then(res => {
                     return res.json();
@@ -110,7 +114,9 @@ export default {
         }
     },
     created() {
+
         this.getMyUpload();
+
     }
 }
 </script>

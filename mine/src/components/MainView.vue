@@ -34,7 +34,9 @@
                     v-if="btnVisible">上传</div>
             </div>
             <div class="show-option">
-                <component :is="componentId" :user="user" :btnVisible="btnVisible"></component>
+                <transition name="into" appear mode="out-in">
+                    <component :is="componentId" :user="user" :btnVisible="btnVisible"></component>
+                </transition>
             </div>
         </section>
     </div>
@@ -51,7 +53,7 @@ export default {
         ElUpload,
         CollectionView,
         UploadView,
-        MyUpload
+        MyUpload,
     },
     data() {
         return {
@@ -176,6 +178,31 @@ export default {
 }
 </script>
 <style lang="css">
+.into-enter-active,
+.into-leave-active {
+    transition: all .3s ease;
+}
+
+.into-enter-from {
+    opacity: 0.0;
+    transform: translate(0, 50px);
+}
+
+.into-enter-to {
+    opacity: 1.0;
+    transform: translate(0, 0);
+}
+
+.into-leave-to {
+    opacity: 0.0;
+    transform: translate(0, 0);
+}
+
+.into-leave-from {
+    opacity: 1.0;
+    transform: translate(0, 0);
+}
+
 .main {
     width: 80%;
     margin: 0 auto;
@@ -226,9 +253,11 @@ export default {
     height: 75%;
     color: #fff;
 }
+
 .header-info div:nth-child(1) {
-        max-width: 300px;
-    }
+    max-width: 300px;
+}
+
 .middle {
     width: 100%;
     height: auto;
@@ -270,8 +299,9 @@ export default {
 
 .show-option {
     width: 85%;
-    padding: 0 0 0 10px;
+    margin: 0 0 0 10px;
     box-sizing: border-box;
+    background: #fff;
 }
 
 .el-upload {
@@ -339,8 +369,13 @@ export default {
     .el-message-box {
         width: 80% !important
     }
+
     .header-info div:nth-child(1) {
         max-width: 150px;
+    }
+    .show-option{
+        margin: 0;
+        padding: 0 0 0 10px;
     }
 }
 </style>
