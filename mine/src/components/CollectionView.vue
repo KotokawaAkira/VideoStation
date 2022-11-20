@@ -23,7 +23,7 @@
                                     target="_blank">
                                     <div class="item-name" :title="video.title">{{ video.title }}</div>
                                 </a>
-                                <div class="options btn-delete-collection" v-show="btnVisible"
+                                <div class="options btn-delete-collection" v-if="btnVisible"
                                     @click="removeCollection(item.name, video.id)">
                                     删除
                                 </div>

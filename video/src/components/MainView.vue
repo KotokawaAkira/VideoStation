@@ -226,6 +226,7 @@
                             </span>
                         </div>
                     </div>
+                    <div class="add-video video-change-li" v-if="isUp" @click="selectFile">添加视频</div>
                 </div>
                 <div class="more">
 
@@ -275,11 +276,22 @@
                 </span>
             </template>
         </el-dialog>
+        <el-dialog v-model="showUpLoad" title="上传" width="350px" :before-close="handleClose">
+            <div class="progress-outer">
+                <div style="margin-bottom:15px">{{ progress }}%</div>
+                <div class="progress-inner" ref="progress_inner"></div>
+            </div>
+            <template #footer>
+                <span class="dialog-footer">
+                    <el-button type="primary" @click="handleClose">取消</el-button>
+                </span>
+            </template>
+        </el-dialog>
     </div>
 </template>
 <script>
 import Dplayer from 'dplayer'
-import { ElPagination, ElMessageBox, ElImage } from 'element-plus';
+import { ElPagination, ElMessageBox, ElImage, ElNotification } from 'element-plus';
 import BackTop from './BackTop.vue';
 export default {
     props: ['isLogin', 'user', 'collection'],
@@ -294,6 +306,7 @@ export default {
             uper: {},
             player: {},
             videoList: [],
+            now:0,
             summary_show: false,
             comments: [],
             pageSize: 3,
@@ -309,7 +322,13 @@ export default {
             switcher_isActive: true,
             newCollection: '',
             profile: 'https://kotokawa-akira-mywife.site/web/api/account/getProfile/000',
-            profiles: []
+            profiles: [],
+            isUp: false,
+            showUpLoad: false,
+            loader: {},
+            progress: 0,
+            file: document.createElement("input"),
+            video_file:null
         }
     },
     watch: {
@@ -365,8 +384,62 @@ export default {
         collection(value) {
             this.isCollected = this.judgeIsCollected(value);
         },
+        progress(value) {
+            this.$refs.progress_inner.style.width = value + "%";
+        }
     },
     methods: {
+        handleClose() {
+            ElMessageBox.confirm("确定关闭上传窗口吗? 将会停止上传!", "提示", {
+                confirmButtonText: "确定",
+                cancelButtonText: "取消"
+            }).then(() => {
+                this.showUpLoad = false;
+                this.progress = 0;
+                this.loader.abort();
+                this.video_file = null;
+            }).catch(() => { });
+        },
+        selectFile() {
+            this.file.click();
+        },
+        beforeVideoUpload(rawFile) {
+            if (rawFile.type != 'video/mp4' && rawFile.type != 'video/ogg') {
+                ElMessageBox.alert('只能上传 <b style="color:var(--ava)">mp4、ogg</b> 格式的视频', '提示', { dangerouslyUseHTMLString: true, confirmButtonText: "确定" });
+                return false;
+            } else if (rawFile.size / 1024 / 1024 > 500) {
+                ElMessageBox.alert('视频大小不能超过 <b style="color:var(--ava)">500MB</b> ', '提示', { dangerouslyUseHTMLString: true, confirmButtonText: "确定" });
+                return false
+            }
+            return true
+        },
+        uploadVideo(id) {
+            this.showUpLoad = true;
+            const xhr = new XMLHttpRequest();
+            this.loader = xhr;
+            xhr.open('post', 'https://kotokawa-akira-mywife.site/web/api/video/uploadVideo/' + id);
+            const data = new FormData();
+            data.append("video", this.video_file);
+            xhr.upload.addEventListener("progress", (e) => {
+                let num = e.loaded * 100 / e.total;
+                this.progress = num.toFixed(2);
+            });
+            xhr.addEventListener("readystatechange", () => {
+                if (xhr.readyState == xhr.DONE && xhr.status == 200) {
+                    this.upload_id = "";
+                    ElNotification({
+                        title: "上传完毕",
+                        message: "上传完毕",
+                        duration: 0,
+                        dangerouslyUseHTMLString: true
+                    });
+                    this.showUpLoad = false;
+                    this.progress = 0;
+                    this.clear();
+                }
+            });
+            xhr.send(data);
+        },
         ajax(options, success, failure) {
             // 默认参数
             const defaultOptions = {
@@ -438,6 +511,8 @@ export default {
                 return res.json();
             }).then(data => {
                 this.uper = data;
+                if (this.video.up === this.user.id)
+                    this.isUp = true;
             });
         },
         getVideoList() {
@@ -452,12 +527,14 @@ export default {
                 this.videoList = data;
                 this.$nextTick(() => {
                     this.player.video.src = "https://kotokawa-akira-mywife.site/web/api/video/" + this.video.id + "/" + data[0];
+                    this.now = 0;
                     let list = document.querySelectorAll(".video-change-li");
                     list[0].style.color = 'var(--ava)';
                 });
             });
         },
         changeVideo(file, index) {
+            this.now = index;
             this.player.video.src = "https://kotokawa-akira-mywife.site/web/api/video/" + this.video.id + "/" + file;
             this.player.video.play();
             let list = document.querySelectorAll(".video-change-li");
@@ -656,6 +733,7 @@ export default {
     },
     created() {
         this.getVideoInfo();
+        this.file.type = "file";
     },
     mounted() {
         const player = new Dplayer({
@@ -670,11 +748,24 @@ export default {
             }
         });
         this.player = player;
-
+        this.player.on("ended",()=>{
+            if(this.now !== this.videoList.length-1){
+                const next = this.now + 1;
+                this.changeVideo(this.videoList[next],next);
+            }
+        })
         window.addEventListener("scroll", () => {
             if (document.documentElement.scrollTop > 380) {
                 this.reply_show = true;
             } else this.reply_show = false;
+        });
+
+        this.file.addEventListener("change", () => {
+            let can = this.beforeVideoUpload(this.file.files[0]);
+            if (can){
+                this.video_file = this.file.files[0];
+                this.uploadVideo(this.video.id);
+            }  
         });
     }
 }
@@ -836,6 +927,7 @@ export default {
 
 .lower-more {
     width: 30%;
+    margin: 5px 0 100px 0;
 }
 
 .video-change-ul::-webkit-scrollbar {
@@ -1250,7 +1342,17 @@ export default {
     overflow: hidden;
     border-radius: 35px;
 }
+.progress-outer {
+    width: 100%;
+    height: 60px;
+}
 
+.progress-inner {
+    width: 0%;
+    height: 20px;
+    background-color: var(--ava);
+    border: 1px solid var(--line_regular);
+}
 @media screen and (max-width:550px) {
     .lower-left-summary {
         font-size: 17px;
