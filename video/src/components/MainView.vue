@@ -864,6 +864,7 @@ export default {
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
+    word-wrap: anywhere;
 }
 
 .video-info-detail {
@@ -1105,10 +1106,16 @@ export default {
 }
 
 .lower-comments-li-header-name {
-    width: 80%;
     text-align: left;
     font-size: 25px;
     user-select: text;
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    word-wrap: anywhere;
 }
 
 .lower-comments-li-text {
