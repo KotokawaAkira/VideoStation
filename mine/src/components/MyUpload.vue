@@ -7,10 +7,10 @@
             </div>
             <div class="placeholder" v-if="isEmpty">没有更多了~</div>
             <div class="my-upload-ul" v-else>
-                <div class="my-upload-li" v-for="(item, index) in selected.slice(
+                <div class="my-upload-li" v-for="item in selected.slice(
                     (this.currentPage - 1) * this.pageSize,
                     this.currentPage * this.pageSize
-                )" :key="index">
+                )" :key="item.time">
                     <a :href="'https://kotokawa-akira-mywife.site/web/Video/' + item.id" target="_blank">
                         <div class="img-container">
                             <img draggable="false"

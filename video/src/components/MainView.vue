@@ -105,7 +105,7 @@
                 <div class="lower-comments">
                     <div style="text-align:left;font-size: 26px;color: #000;">评论</div>
                     <ul>
-                        <li class="lower-comments-li" v-for="(item, index) in comments" :key="index">
+                        <li class="lower-comments-li" v-for="(item, index) in comments" :key="item.time">
                             <div class="lower-comments-li-header">
                                 <a :href="'https://kotokawa-akira-mywife.site/web/Mine/' + item.uid">
                                     <div class="lower-comments-li-img-container">
@@ -141,10 +141,10 @@
 
                             </div>
                             <div class="lower-comments-li-reply">
-                                <div class="lower-comments-li-reply-li" v-for="(reply, number) in item.commentList.slice(
+                                <div class="lower-comments-li-reply-li" v-for="reply in item.commentList.slice(
                                     (this.currentPages[index] - 1) * this.pageSize,
                                     this.currentPages[index] * this.pageSize
-                                )" :key="number">
+                                )" :key="reply.time">
                                     <div class="lower-comments-li-header">
                                         <div style="width:40px;height:40px;border-radius: 20px;overflow: hidden;"
                                             class="lower-comments-li-img-container">
@@ -263,7 +263,7 @@
         <el-dialog v-model="dialogVisible" title="添加到收藏夹" width="20%" center>
             <div style="display:flex;flex-direction:column;justify-content:flex-start;align-items: center;">
                 <div class="dialog-collection-ul">
-                    <div class="dialog-collection-li" v-for="(item, index) in collection" :key="index"
+                    <div class="dialog-collection-li" v-for="item in collection" :key="item.name"
                         @click="addCollection(item.name)">
                         {{ item.name }}
                     </div>
@@ -306,7 +306,7 @@ export default {
             uper: {},
             player: {},
             videoList: [],
-            now:0,
+            now: 0,
             summary_show: false,
             comments: [],
             pageSize: 3,
@@ -328,7 +328,7 @@ export default {
             loader: {},
             progress: 0,
             file: document.createElement("input"),
-            video_file:null
+            video_file: null
         }
     },
     watch: {
@@ -748,10 +748,10 @@ export default {
             }
         });
         this.player = player;
-        this.player.on("ended",()=>{
-            if(this.now !== this.videoList.length-1){
+        this.player.on("ended", () => {
+            if (this.now !== this.videoList.length - 1) {
                 const next = this.now + 1;
-                this.changeVideo(this.videoList[next],next);
+                this.changeVideo(this.videoList[next], next);
             }
         })
         window.addEventListener("scroll", () => {
@@ -762,10 +762,10 @@ export default {
 
         this.file.addEventListener("change", () => {
             let can = this.beforeVideoUpload(this.file.files[0]);
-            if (can){
+            if (can) {
                 this.video_file = this.file.files[0];
                 this.uploadVideo(this.video.id);
-            }  
+            }
         });
     }
 }
@@ -857,10 +857,13 @@ export default {
 .video-info-title {
     font-size: 25px;
     overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
     width: 100%;
     text-align: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
 }
 
 .video-info-detail {
@@ -1342,6 +1345,7 @@ export default {
     overflow: hidden;
     border-radius: 35px;
 }
+
 .progress-outer {
     width: 100%;
     height: 60px;
@@ -1353,6 +1357,7 @@ export default {
     background-color: var(--ava);
     border: 1px solid var(--line_regular);
 }
+
 @media screen and (max-width:550px) {
     .lower-left-summary {
         font-size: 17px;

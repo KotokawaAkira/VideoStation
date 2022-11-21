@@ -3,7 +3,7 @@
         <section v-if="type == 'videos'">
             <div class="videos">
                 <ul v-show="!isVideosEmpty">
-                    <li v-for="(item, index) in videosChange" :key="index">
+                    <li v-for="item in videosChange" :key="item.id">
                         <div class="border-container">
                             <div class="img-container">
                                 <a :href="'https://kotokawa-akira-mywife.site/web/Video/' + item.id" target="_blank"
@@ -18,11 +18,14 @@
                                     {{ item.title }}
                                 </div>
                             </a>
+
                             <div class="main-recommend-li-detail-container">
                                 <div class="main-recommend-li-detail" :title="item.upName">
-                                    <div class="upName_span">
-                                        {{ item.upName }}
-                                    </div>
+                                    <a :href="'https://kotokawa-akira-mywife.site/web/Mine/' + item.up">
+                                        <div class="upName_span">
+                                            {{ item.upName }}
+                                        </div>
+                                    </a>
                                 </div>
                                 <div class="main-recommend-li-detail">
                                     <div class="main-recommend-li-detail-play">
@@ -61,7 +64,7 @@
         <section v-else>
             <div class="users">
                 <ul v-show="!isUsersEmpty">
-                    <li v-for="(item, index) in usersChange" :key="index">
+                    <li v-for="item in usersChange" :key="item.id">
                         <div class="users-img">
                             <a :href="'https://kotokawa-akira-mywife.site/web/Mine/' + item.id">
                                 <el-image fit="cover" draggable="false"
@@ -84,7 +87,7 @@
                             </a>
                         </div>
                         <div class="users-name" :title="item.name">
-                            <a :href="'https://kotokawa-akira-mywife.site/web/Mine/' + item.id">
+                            <a :href="'https://kotokawa-akira-mywife.site/web/Mine/' + item.id" target="_blank">
                                 {{ item.name }}
                             </a>
                         </div>
@@ -232,7 +235,6 @@ export default {
             }, 1000)
         },
         getVideos() {
-            console.log(this.params);
             fetch('https://kotokawa-akira-mywife.site/web/api/video/search?keywords=' + this.params, {
                 method: 'get',
                 headers: {
@@ -276,6 +278,7 @@ export default {
 .main-recommend-li-title {
     height: 54px;
 }
+
 .border-container {
     padding: 5px;
     border: 1px solid transparent;
@@ -286,6 +289,7 @@ export default {
 .border-container:hover {
     border: 1px solid var(--ava);
 }
+
 .Empty {
     min-height: 780px !important;
     font-size: 30px;

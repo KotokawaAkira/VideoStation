@@ -2,14 +2,14 @@
     <div class="collection-mian" v-loading="isLoading" element-loading-text="加载中">
         <div class="title">我的收藏</div>
         <div v-if="isEmpty">
-            <div class="collections" v-for="(item, index) in collection" :key="index">
+            <div class="collections" v-for="(item, index) in collection" :key="item.name">
                 <div class="btn-name" style="font-size:26px;text-align:left;padding-left: 25px;"> <span
                         @click="btnVisible && rename(item.name)">{{ item.name }}</span> </div>
                 <ul class="collection-ul">
-                    <li class="collection-li" v-for="(video, number) in item.videos.slice(
+                    <li class="collection-li" v-for="video in item.videos.slice(
                         (this.currentPages[index] - 1) * this.pageSize,
                         this.currentPages[index] * this.pageSize
-                    )" :key="number">
+                    )" :key="video.id">
                         <div class="collection-li-inner">
                             <a :href="'https://kotokawa-akira-mywife.site/web/Video/' + video.id" target="_blank">
                                 <div class="img-container">
