@@ -275,10 +275,12 @@ export default {
 
 .main-recommend-li-detail-container span {
     padding-top: 2.5px;
+    margin-left: 5px;
 }
 
 .main-recommend-li-detail-play {
     padding-right: 5px;
+    white-space: nowrap;
 }
 
 .main-recommend-li-detail:hover {
@@ -325,7 +327,7 @@ export default {
     }
 
     .main-view li {
-        width: 50% !important;
+        width: 50%;
         padding: 10px;
     }
 
@@ -335,11 +337,11 @@ export default {
     }
 
     .main-recommend-li-detail {
-        font-size: 14px !important;
+        font-size: 14px;
     }
 
     .main-recommend-li-detail span {
-        font-size: 10px !important;
+        font-size: 10px;
         margin-left: 5px;
     }
 
@@ -349,8 +351,8 @@ export default {
     }
 
     .main-recommend-li-title {
-        font-size: 14px !important;
-        height: 35px !important;
+        font-size: 14px;
+        height: 35px; 
     }
 
     .load-more {
@@ -359,6 +361,75 @@ export default {
 
     .options-li {
         margin: 0 !important;
+    }
+}
+
+@media screen and (550px<width<=800px) {
+    .main-recommend-li-detail {
+        font-size: 14px;
+    }
+
+    .main-recommend-li-detail span {
+        font-size: 10px;
+        margin-left: 5px;
+    }
+
+    .main-recommend-li-detail svg {
+        height: 10px;
+        width: 10px;
+    }
+
+    .main-recommend-li-title {
+        font-size: 14px;
+        height: 35px;
+    }
+
+    .main-view li {
+        width: 33%;
+    }
+}
+@media screen and (800px<width<=1100px) {
+    .main-recommend-li-detail {
+        font-size: 14px;
+    }
+
+    .main-recommend-li-detail span {
+        font-size: 10px;
+        margin-left: 5px;
+    }
+
+    .main-recommend-li-detail svg {
+        height: 10px;
+        width: 10px;
+    }
+
+    .main-recommend-li-title {
+        font-size: 14px;
+        height: 35px;
+    }
+
+    .main-view li {
+        width: 25%;
+    }
+}
+@media screen and (1100px<width<=1500px) {
+    .main-recommend-li-detail {
+        font-size: 16px;
+    }
+
+    .main-recommend-li-detail span {
+        font-size: 12px;
+        margin-left: 5px;
+    }
+
+    .main-recommend-li-detail svg {
+        height: 12px;
+        width: 12px;
+    }
+
+    .main-recommend-li-title {
+        font-size: 16px;
+        height: 40px;
     }
 }
 </style>
