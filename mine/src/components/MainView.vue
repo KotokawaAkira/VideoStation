@@ -61,7 +61,7 @@ export default {
             btn_isActive_upload: false,
             btn_isActive_myupload: false,
             componentId: "CollectionView",
-            btnVisible: true,
+            btnVisible: false,
         }
     },
     watch: {

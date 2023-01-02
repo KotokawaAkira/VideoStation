@@ -723,6 +723,13 @@ export default {
                 cancelButtonText: '取消',
                 inputPlaceholder: '收藏夹名'
             }).then(msg => {
+                if (msg.value.includes(":")) {
+                    ElMessageBox.alert("由于系统设计，不能输入 ':' 字符","错误",{
+                        confirmButtonText:"确定",
+                        type:"error"
+                    });
+                    return;
+                }
                 if (msg.value == "" || msg.value == null) {
                     ElMessageBox.alert("文件名不能为空!");
                     return;
